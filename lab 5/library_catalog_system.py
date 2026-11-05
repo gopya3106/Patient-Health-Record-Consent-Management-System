@@ -29,8 +29,7 @@ def return_book(book_id):
 
 
 def check_availability(book_id):
-    late_fee = 1.50
-    if catalog.get(book_id) == None:
+    if catalog.get(book_id) is None:
         return False
     if catalog[book_id]["copies"] > 0:
         return True
@@ -39,7 +38,6 @@ def check_availability(book_id):
 
 
 def calculate_fine(days_overdue, rate_per_day=2.0):
-    days = days_overdue
     fine = days_overdue * rate_per_day
     return fine
 
@@ -53,8 +51,11 @@ def generate_temp_patron_pin():
 
 
 def export_catalog(filename="catalog_export.txt"):
-    f = open(filename, "w")
-    f.write(str(catalog))
+    f = open(filename, "w", newline="")
+    writer = csv.writer(f)
+    writer.writerow(["book_id", "title", "copies"])
+    for book_id, info in catalog.items():
+        writer.writerow([book_id, info["title"], info["copies"]])
     f.close()
     print("Catalog backup exported to:", filename)
 
